@@ -14,73 +14,73 @@ const tours = JSON.parse(
 // Creating Our Own API
 
 // HANDLING GET REQUESTS ==> GET --> GET All The Tours
-app.get('/api/v1/tours', (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    results: tours.length,
-    data: {
-      tours: tours,
-    },
-  });
-});
+
+const getAllTours = (req, res) => {
+    res.status(200).json({
+      status: 'success',
+      results: tours.length,
+      data: {
+        tours: tours,
+      },
+    });
+  }
 
 // HANDLING POST REQUEST ==> POST --> Ctreate A New Tour
-app.post('/api/v1/tours', (req, res) => {
-  // we can send data from the client to the server
-  // req object: holds the data about all the data in te request, req should has the data
-  // Express dose not put that body data in the request --> So, use middleware
-
-//   console.log(req.body);
-const newId= tours[tours.length -1].id +1;
-const newTour = Object.assign({id: newId}, req.body);
-
-tours.push(newTour);
-
-fs.writeFile(`${__dirname}/dev-data/data/tours-simple.json`,JSON.stringify(tours), err=>{
-
-// 201 --> DATA IS CREATED
-    res.status(201).json({
-        status:'success',
-        data: {
-          tour: newTour,
-        },
-    })
-});
-//   res.send('DONE...')
-
-});
+const createTour = (req, res) => {
+    // we can send data from the client to the server
+    // req object: holds the data about all the data in te request, req should has the data
+    // Express dose not put that body data in the request --> So, use middleware
+  
+  //   console.log(req.body);
+  const newId= tours[tours.length -1].id +1;
+  const newTour = Object.assign({id: newId}, req.body);
+  
+  tours.push(newTour);
+  
+  fs.writeFile(`${__dirname}/dev-data/data/tours-simple.json`,JSON.stringify(tours), err=>{
+  
+  // 201 --> DATA IS CREATED
+      res.status(201).json({
+          status:'success',
+          data: {
+            tour: newTour,
+          },
+      })
+  });
+  //   res.send('DONE...')
+  
+  }
 
 // GET ONE TOUR (HANDLING URL PARAMAETRS)
+const getTour = (req,  res)=>{
 
-app.get('/api/v1/tours/:id', (req,  res)=>{
-
-// all the parameters(variables) are stored here --> params
-// console.log(req.params);
-const id = req.params.id * 1; // convert string to a number
-const tour = tours.find(el => el.id === id);
-
-// id > tours.length ==> !tour
-if(!tour){
-    return res.status(404).json({
-        status: 'ERROR',
-        message: 'Tour not found, Invalid ID',
-    });
-}
-
-
-res.status(200).json(
-    {
-        status:'success',
-        data: {
-         tour,
-        },
-       
+    // all the parameters(variables) are stored here --> params
+    // console.log(req.params);
+    const id = req.params.id * 1; // convert string to a number
+    const tour = tours.find(el => el.id === id);
+    
+    // id > tours.length ==> !tour
+    if(!tour){
+        return res.status(404).json({
+            status: 'ERROR',
+            message: 'Tour not found, Invalid ID',
+        });
     }
-);
-});
+    
+    
+    res.status(200).json(
+        {
+            status:'success',
+            data: {
+             tour,
+            },
+           
+        }
+    );
+    }
 
 // HANDLING PATCH REQUESTS (UPDATING THE DATA)
-app.patch('/api/v1/tours/:id', (req, res) => {
+const updateTour = (req, res) => {
     if(req.params.id > tours.length){
         return res.status(404).json({
             status: 'ERROR',
@@ -96,10 +96,10 @@ app.patch('/api/v1/tours/:id', (req, res) => {
           tour: "<UPDATED TOUR>",
         },
     });
-});
+}
 
 // HANDLING DELETE REQUESTS
-app.delete('/api/v1/tours/:id', (req, res) => {
+const deleteTour =  (req, res) => {
     if(req.params.id > tours.length){
         return res.status(404).json({
             status: 'ERROR',
@@ -115,7 +115,18 @@ app.delete('/api/v1/tours/:id', (req, res) => {
           tour: null,
         },
     });
-});
+}
+
+
+app.route('/api/v1/tours').get(getAllTours).post(createTour);
+// app.get('/api/v1/tours', getAllTours);
+// app.post('/api/v1/tours/:id', createTour);
+
+app.route('/api/v1/tours/:id').get(getTour).patch(updateTour).delete(deleteTour);
+// app.get('/api/v1/tours', getTour);
+// app.patch('/api/v1/tours/:id', updateTour);
+// app.delete('/api/v1/tours/:id', deleteTour);
+
 
 // THIS ALWAYS THE LAST STEP
 // 3. Listening for The Server
