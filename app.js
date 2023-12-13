@@ -6,7 +6,17 @@ const app = express();
 
 // CREATE SIMPLE MIDDLEWARE --> it is just a function that can modify the incomming request data (middleware--> in the middle of REQUEST & RESPONSE)
 app.use(express.json());
+// CREATE OUR OWN MIDDLEWARE
+app.use((re,res, next)=>{
+    console.log('Hello from the middleware');
+    next();
+});
 
+app.use((req, res, next)=>{
+    // Define new property in our req object
+    req.requestTime = new Date().toISOString();
+    next();
+});
 // Reading The Data in form of JSON FILE
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`));
@@ -16,8 +26,11 @@ const tours = JSON.parse(
 // HANDLING GET REQUESTS ==> GET --> GET All The Tours
 
 const getAllTours = (req, res) => {
+    console.log(req.requestTime);
+
     res.status(200).json({
       status: 'success',
+      requestedAt: req.requestTime,
       results: tours.length,
       data: {
         tours: tours,
