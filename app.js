@@ -50,6 +50,36 @@ fs.writeFile(`${__dirname}/dev-data/data/tours-simple.json`,JSON.stringify(tours
 
 });
 
+// GET ONE TOUR (HANDLING URL PARAMAETRS)
+
+app.get('/api/v1/tours/:id', (req,  res)=>{
+
+// all the parameters(variables) are stored here --> params
+// console.log(req.params);
+const id = req.params.id * 1; // convert string to a number
+const tour = tours.find(el => el.id === id);
+
+if(id > tours.length){
+    return res.status(404).json({
+        status: 'ERROR',
+        message: 'Tour not found, Invalid ID',
+    });
+}
+
+
+res.status(200).json(
+    {
+        status:'success',
+        data: {
+         tour,
+        },
+       
+    }
+);
+});
+
+
+
 // THIS ALWAYS THE LAST STEP
 // 3. Listening for The Server
 app.listen(3000, () => {
