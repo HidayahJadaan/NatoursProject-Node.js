@@ -1,25 +1,26 @@
 // 1. Requiring THe Modeule
 const express = require('express');
+const fs =require('fs');
 // 2. Creating Variable Called app --> Calling express function which holds many methods that we can use it in our app
 const app = express();
 
-// 4. Defining the Route: Routing determines the how an applications response to a certain client request(certain URL==> certain HTTP method that is used in that request)
+// Reading The Data in form of JSON FILE
+const tours = JSON.parse(
+    
+    fs.readFileSync
+    (`${__dirname}/dev-data/data/tours-simple.json`));
 
-// variable.httpmethod --> root URL
-app.get('/', (req, res) => {
-//   SEND DATA BACK
-    // res.status(200).send('Hello World From The Server Side');
-    res.status(200).json({ message:
-        'Hello World From The Server Side', app: 'Natours'});
-
+// Creating Our Own API
+app.get('/api/v1/tours', (req,res)=>{
+    res.status(200).json({
+        status:'success',
+        results: tours.length,
+        data:
+         {
+            tours: tours
+        }
+    })
 });
-
-
-app.post('/', (req, res) => {
-    res.send('Hello World From POST Request');
-});
-
-
 
 
 
