@@ -89,7 +89,7 @@ app.patch('/api/v1/tours/:id', (req, res) => {
 
     
     }
-    
+
     res.status(200).json({
         status:'success',
         data: {
@@ -98,6 +98,24 @@ app.patch('/api/v1/tours/:id', (req, res) => {
     });
 });
 
+// HANDLING DELETE REQUESTS
+app.delete('/api/v1/tours/:id', (req, res) => {
+    if(req.params.id > tours.length){
+        return res.status(404).json({
+            status: 'ERROR',
+            message: 'Tour not found, Invalid ID',
+        });
+
+    
+    }
+// 204 ==> no content
+    res.status(204).json({
+        status:'success',
+        data: {
+          tour: null,
+        },
+    });
+});
 
 // THIS ALWAYS THE LAST STEP
 // 3. Listening for The Server
