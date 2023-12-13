@@ -59,7 +59,8 @@ app.get('/api/v1/tours/:id', (req,  res)=>{
 const id = req.params.id * 1; // convert string to a number
 const tour = tours.find(el => el.id === id);
 
-if(id > tours.length){
+// id > tours.length ==> !tour
+if(!tour){
     return res.status(404).json({
         status: 'ERROR',
         message: 'Tour not found, Invalid ID',
@@ -78,6 +79,24 @@ res.status(200).json(
 );
 });
 
+// HANDLING PATCH REQUESTS (UPDATING THE DATA)
+app.patch('/api/v1/tours/:id', (req, res) => {
+    if(req.params.id > tours.length){
+        return res.status(404).json({
+            status: 'ERROR',
+            message: 'Tour not found, Invalid ID',
+        });
+
+    
+    }
+    
+    res.status(200).json({
+        status:'success',
+        data: {
+          tour: "<UPDATED TOUR>",
+        },
+    });
+});
 
 
 // THIS ALWAYS THE LAST STEP
