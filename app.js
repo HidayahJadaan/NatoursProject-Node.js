@@ -172,12 +172,15 @@ const deleteUser = (req, res) =>{
 
 // ROUTES
 
-app.route('/api/v1/tours').get(getAllTours).post(createTour);
+const tourRouter = express.Router();
+// Mountain The Router
+app.use('/api/v1/tours', tourRouter)// use this middleware to a specific route
+tourRouter.route('/').get(getAllTours).post(createTour);
 // app.get('/api/v1/tours', getAllTours);
 // app.post('/api/v1/tours/:id', createTour);
 
-app
-  .route('/api/v1/tours/:id')
+tourRouter
+  .route('/:id')
   .get(getTour)
   .patch(updateTour)
   .delete(deleteTour);
@@ -185,13 +188,18 @@ app
 // app.patch('/api/v1/tours/:id', updateTour);
 // app.delete('/api/v1/tours/:id', deleteTour);
 
-app.route('/api/v1/users').get(getAllUsers).post(createUser);
-app
-  .route('/api/v1/users/:id')
+
+// =================== USERS =========================
+const userRouter = express.Router();
+app.use('/api/v1/users', userRouter)// use this middleware to a specific route
+
+userRouter.route('/').get(getAllUsers).post(createUser);
+userRouter
+  .route('/:id')
   .get(getUser)
   .patch(updateUser)
   .delete(deleteUser);
-
+// ==================================================
 // START THE SERVER
 // THIS ALWAYS THE LAST STEP
 // 3. Listening for The Server
