@@ -6,7 +6,15 @@ const tours = JSON.parse(
     fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
   );
   
-  
+  exports.checkID = (req, res, next, value)=>{
+    if (req.params.id > tours.length) {
+      return res.status(404).json({
+        status: 'ERROR',
+        message: 'Tour not found, Invalid ID',
+      });
+    }
+    next();
+  }
 
 // Creating Our Own API (ROUTES HANDLERS)
 
@@ -60,12 +68,9 @@ exports.getAllTours = (req, res) => {
     const tour = tours.find((el) => el.id === id);
   
     // id > tours.length ==> !tour
-    if (!tour) {
-      return res.status(404).json({
-        status: 'ERROR',
-        message: 'Tour not found, Invalid ID',
-      });
-    }
+    // if (!tour) {
+     
+    
   
     res.status(200).json({
       status: 'success',
@@ -77,12 +82,8 @@ exports.getAllTours = (req, res) => {
   
   // HANDLING PATCH REQUESTS (UPDATING THE DATA)
   exports.updateTour = (req, res) => {
-    if (req.params.id > tours.length) {
-      return res.status(404).json({
-        status: 'ERROR',
-        message: 'Tour not found, Invalid ID',
-      });
-    }
+    
+    
   
     res.status(200).json({
       status: 'success',
@@ -94,12 +95,7 @@ exports.getAllTours = (req, res) => {
   
   // HANDLING DELETE REQUESTS
   exports.deleteTour = (req, res) => {
-    if (req.params.id > tours.length) {
-      return res.status(404).json({
-        status: 'ERROR',
-        message: 'Tour not found, Invalid ID',
-      });
-    }
+   
     // 204 ==> no content
     res.status(204).json({
       status: 'success',
