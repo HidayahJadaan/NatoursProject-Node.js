@@ -16,6 +16,17 @@ const tours = JSON.parse(
     next();
   }
 
+
+exports.checkBody = function (req, res, next) {
+  if(!req.body.name || !req.body.price){
+    return res.status(400).json({
+      status: 'ERROR',
+      message: 'Please provide a name and a price',
+    });
+  }
+  next();
+}
+
 // Creating Our Own API (ROUTES HANDLERS)
 
 // HANDLING GET REQUESTS ==> GET --> GET All The Tours
