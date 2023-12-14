@@ -1,7 +1,9 @@
 // 1. Requiring THe Modeule
-const express = require('express');
-const fs = require('fs');
+const  express = require('express');
 const morgan = require('morgan'); //3rd-party middleware
+const tourRouter = require('./routes/tourRoutes')
+const userRouter = require('./routes/userRoutes')
+
 // 2. Creating Variable Called app --> Calling express function which holds many methods that we can use it in our app
 const app = express();
 
@@ -21,189 +23,13 @@ app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   next();
 });
-// Reading The Data in form of JSON FILE
-const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
-);
-
-// Creating Our Own API (ROUTES HANDLERS)
-
-// HANDLING GET REQUESTS ==> GET --> GET All The Tours
-const getAllTours = (req, res) => {
-  console.log(req.requestTime);
-
-  res.status(200).json({
-    status: 'success',
-    requestedAt: req.requestTime,
-    results: tours.length,
-    data: {
-      tours: tours,
-    },
-  });
-};
-
-// HANDLING POST REQUEST ==> POST --> Ctreate A New Tour
-const createTour = (req, res) => {
-  // we can send data from the client to the server
-  // req object: holds the data about all the data in te request, req should has the data
-  // Express dose not put that body data in the request --> So, use middleware
-
-  //   console.log(req.body);
-  const newId = tours[tours.length - 1].id + 1;
-  const newTour = Object.assign({ id: newId }, req.body);
-
-  tours.push(newTour);
-
-  fs.writeFile(
-    `${__dirname}/dev-data/data/tours-simple.json`,
-    JSON.stringify(tours),
-    (err) => {
-      // 201 --> DATA IS CREATED
-      res.status(201).json({
-        status: 'success',
-        data: {
-          tour: newTour,
-        },
-      });
-    }
-  );
-  //   res.send('DONE...')
-};
-
-// GET ONE TOUR (HANDLING URL PARAMAETRS)
-const getTour = (req, res) => {
-  // all the parameters(variables) are stored here --> params
-  // console.log(req.params);
-  const id = req.params.id * 1; // convert string to a number
-  const tour = tours.find((el) => el.id === id);
-
-  // id > tours.length ==> !tour
-  if (!tour) {
-    return res.status(404).json({
-      status: 'ERROR',
-      message: 'Tour not found, Invalid ID',
-    });
-  }
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour,
-    },
-  });
-};
-
-// HANDLING PATCH REQUESTS (UPDATING THE DATA)
-const updateTour = (req, res) => {
-  if (req.params.id > tours.length) {
-    return res.status(404).json({
-      status: 'ERROR',
-      message: 'Tour not found, Invalid ID',
-    });
-  }
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour: '<UPDATED TOUR>',
-    },
-  });
-};
-
-// HANDLING DELETE REQUESTS
-const deleteTour = (req, res) => {
-  if (req.params.id > tours.length) {
-    return res.status(404).json({
-      status: 'ERROR',
-      message: 'Tour not found, Invalid ID',
-    });
-  }
-  // 204 ==> no content
-  res.status(204).json({
-    status: 'success',
-    data: {
-      tour: null,
-    },
-  });
-};
-
-const getAllUsers = (req, res) =>{
-    // 500 --> Internal Server Error
-    res.status(500).json({
-        status: 'error',
-        message: 'Internal Server Error, This route is not yet defined',
-    })
-}
-
-const getUser= (req, res) =>{
-    // 500 --> Internal Server Error
-    res.status(500).json({
-        status: 'error',
-        message: 'Internal Server Error, This route is not yet defined',
-    })
-}
-
-const createUser = (req, res) =>{
-    // 500 --> Internal Server Error
-    res.status(500).json({
-        status: 'error',
-        message: 'Internal Server Error, This route is not yet defined',
-    })
-}
-
-
-const updateUser = (req, res) =>{
-    // 500 --> Internal Server Error
-    res.status(500).json({
-        status: 'error',
-        message: 'Internal Server Error, This route is not yet defined',
-    })
-}
-
-
-const deleteUser = (req, res) =>{
-    // 500 --> Internal Server Error
-    res.status(500).json({
-        status: 'error',
-        message: 'Internal Server Error, This route is not yet defined',
-    })
-}
 
 
 // ROUTES
-
-const tourRouter = express.Router();
 // Mountain The Router
 app.use('/api/v1/tours', tourRouter)// use this middleware to a specific route
-tourRouter.route('/').get(getAllTours).post(createTour);
-// app.get('/api/v1/tours', getAllTours);
-// app.post('/api/v1/tours/:id', createTour);
-
-tourRouter
-  .route('/:id')
-  .get(getTour)
-  .patch(updateTour)
-  .delete(deleteTour);
-// app.get('/api/v1/tours', getTour);
-// app.patch('/api/v1/tours/:id', updateTour);
-// app.delete('/api/v1/tours/:id', deleteTour);
-
-
 // =================== USERS =========================
-const userRouter = express.Router();
 app.use('/api/v1/users', userRouter)// use this middleware to a specific route
 
-userRouter.route('/').get(getAllUsers).post(createUser);
-userRouter
-  .route('/:id')
-  .get(getUser)
-  .patch(updateUser)
-  .delete(deleteUser);
 // ==================================================
-// START THE SERVER
-// THIS ALWAYS THE LAST STEP
-// 3. Listening for The Server
-app.listen(3000, () => {
-  // This function is called when the server is listening on the port
-  console.log('App listening on port 3000 ...');
-});
+module.exports = app;
