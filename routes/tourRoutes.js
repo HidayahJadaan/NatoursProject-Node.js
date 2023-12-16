@@ -13,7 +13,8 @@ const router = express.Router();
 router
   .route('/')
   .get(tourController.getAllTours)
-  .post(tourController.checkBody, tourController.createTour);
+  .post(tourController.createTour);
+  // .post(tourController.checkBody, tourController.createTour);
 // app.get('/api/v1/tours', getAllTours);
 // app.post('/api/v1/tours/:id', createTour);
 

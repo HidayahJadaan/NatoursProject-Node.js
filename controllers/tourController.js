@@ -1,16 +1,6 @@
 const Tour = require('./../models/tourModel');
 
 
-exports.checkBody = function (req, res, next) {
-  if (!req.body.name || !req.body.price) {
-    return res.status(400).json({
-      status: 'ERROR',
-      message: 'Please provide a name and a price',
-    });
-  }
-  next();
-};
-
 // Creating Our Own API (ROUTES HANDLERS)
 
 // HANDLING GET REQUESTS ==> GET --> GET All The Tours
@@ -24,13 +14,29 @@ exports.getAllTours = (req, res) => {
 };
 
 // HANDLING POST REQUEST ==> POST --> Ctreate A New Tour
-exports.createTour = (req, res) => {
+exports.createTour = async (req, res) => {
+try {
+
+  // CREATE DOCUMENT
+  const newTour = await Tour.create(req.body);
+  
+  // EQUIVELANT TO:
+  // const newTour = new Tour({});
+  // newTour.save();
+  
   res.status(200).json({
     status: 'success',
-    // data: {
-    //   tour: '<NEW TOUR>',
-    // },
+    data: {
+      tour: newTour,
+    },
   });
+} catch (err) {
+  // BAD REQUST
+  res.status(400).json({
+    status: 'error',
+    message: "INVALID DATA SEND",
+  });
+}
 };
 
 // GET ONE TOUR (HANDLING URL PARAMAETRS)
