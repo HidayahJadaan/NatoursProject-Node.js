@@ -27,36 +27,19 @@ mongoose
 // console.log(app.get('env'));
 // IN NODE (many environment variables(comes from process core module))
 
-// CREATING SCHEMA (DESCRIPTION)
-const toursSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, 'A tour must have a name'],
-    unique: true,
-  },
-  rating: {
-    type: Number,
-    default: 4.5,
-  },
-  price: {
-    type: Number,
-    required: [true, ' A tour must have a price'],
-  },
-});
-// CREATING A MODEL
-const Tour = mongoose.model('Tour', toursSchema);
 
-// CREATING DOCUMENT
-const testTour = new Tour({
-  name: "The Park Camper",
-  price: 997
-  });
+// // CREATING DOCUMENT
+// const testTour = new Tour({
+//   name: "The Park Camper",
+//   price: 997
+//   });
 
-testTour.save().then(doc => {
-  console.log(doc);
-}).catch(err => {
-  console.log('!!!!!!!ERROR!!!!!!', err);
-});
+// testTour.save().then(doc => {
+//   console.log(doc);
+// }).catch(err => {
+//   console.log('!!!!!!!ERROR!!!!!!', err);
+// });
+
 
 // TO START DEFINING ENVIRONMENT VARIABLE --> NODE_ENV=development nodemon server.js
 const port = process.env.PORT || 7000;
