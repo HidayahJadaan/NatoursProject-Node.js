@@ -46,6 +46,18 @@ const toursSchema = new mongoose.Schema({
 // CREATING A MODEL
 const Tour = mongoose.model('Tour', toursSchema);
 
+// CREATING DOCUMENT
+const testTour = new Tour({
+  name: "The Park Camper",
+  price: 997
+  });
+
+testTour.save().then(doc => {
+  console.log(doc);
+}).catch(err => {
+  console.log('!!!!!!!ERROR!!!!!!', err);
+});
+
 // TO START DEFINING ENVIRONMENT VARIABLE --> NODE_ENV=development nodemon server.js
 const port = process.env.PORT || 7000;
 // START THE SERVER
