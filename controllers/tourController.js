@@ -4,13 +4,24 @@ const Tour = require('./../models/tourModel');
 // Creating Our Own API (ROUTES HANDLERS)
 
 // HANDLING GET REQUESTS ==> GET --> GET All The Tours
-exports.getAllTours = (req, res) => {
-  console.log(req.requestTime);
+exports.getAllTours = async(req, res) => {
+  try {
 
-  res.status(200).json({
-    status: 'success',
-    requestedAt: req.requestTime,
-  });
+    const tours = await Tour.find();
+    
+    res.status(200).json({
+      status:'success',
+      results: tours.length,
+      data: {
+        tours
+      },
+    });
+  } catch (err){
+    res.status(404).json({
+      status: 'Faild',
+      message: err.message,
+    });
+  }
 };
 
 // HANDLING POST REQUEST ==> POST --> Ctreate A New Tour
@@ -40,23 +51,52 @@ try {
 };
 
 // GET ONE TOUR (HANDLING URL PARAMAETRS)
-exports.getTour = (req, res) => {
+exports.getTour = async (req, res) => {
+
+  try {
+    const tour = await Tour.findById(req.params.id);
+
+    res.status(200).json({
+      status:'success',
+      data: {
+        tour,
+      },
+    });
+  }catch(err){
+    res.status(404).json({
+      status: 'Faild',
+      message: err.message,
+    });
+  }
   // all the parameters(variables) are stored here --> params
   // console.log(req.params);
-  const id = req.params.id * 1; // convert string to a number
-  res.status(200).json({
-    status: 'success',
-  });
+  // const id = req.params.id * 1; // convert string to a number
+  // res.status(200).json({
+  //   status: 'success',
+  // });
 };
 
 // HANDLING PATCH REQUESTS (UPDATING THE DATA)
-exports.updateTour = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour: '<UPDATED TOUR>',
-    },
-  });
+exports.updateTour = async(req, res) => {
+  try{
+    
+   const tour= await Tour.findByIdAndUpdate(req.params.id, req.body,{
+      new: true,
+      runValidators: true
+    })
+    res.status(200).json({
+      status: 'success',
+      data: {
+        tour
+      },
+    });
+  }catch{
+
+    res.status(400).json({
+      status: 'error',
+      message: "INVALID DATA SEND",
+    });
+  }
 };
 
 // HANDLING DELETE REQUESTS
