@@ -1,17 +1,17 @@
 const mongoose = require('mongoose');
 // In order to read config.env file and dfeine the varaiables in our node app
 const dotenv = require('dotenv');
+dotenv.config({ path: './config.env' });
 const app = require('./app');
 
-dotenv.config({ path: './config.env' });
 // console.log(process.env);
 const DB = process.env.DATABASE.replace(
   '<PASSWORD>',
   process.env.DATABASE_PASSWORD
 );
 mongoose
-  // .connect(process.env.DATABASE_LOCAL, {
-  .connect(DB, {
+  .connect(process.env.DATABASE_LOCAL, {
+  // .connect(DB, {
     // mongoose.connect(DB, { // HOSTED db vERSION
     useNewUrlParser: true,
     useCreateIndex: true,
